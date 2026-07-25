@@ -7,3 +7,4 @@ torch
 torchvision
 pillow
 huggingface_hub
+scikit-learn
