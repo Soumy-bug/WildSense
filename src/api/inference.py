@@ -19,7 +19,7 @@ from huggingface_hub import hf_hub_download
 sys.path.append(str(Path(__file__).parent.parent / "training"))
 from model import build_model
 from dataset import load_metadata, build_label_mapping
-from train import val_transform, DEVICE, METADATA_PATH, CHECKPOINT_DIR
+from config import val_transform, DEVICE, METADATA_PATH, CHECKPOINT_DIR
 
 CHECKPOINT_PATH = CHECKPOINT_DIR / "best_model.pt"
 

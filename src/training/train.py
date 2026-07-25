@@ -30,25 +30,16 @@ import wandb
 sys.path.append(str(Path(__file__).parent))
 from dataset import load_metadata, build_label_mapping, stratified_split, WildSenseDataset
 from model import build_model, unfreeze_backbone
+from config import (
+    METADATA_PATH, CHECKPOINT_DIR, IMAGE_SIZE, DEVICE,
+    train_transform, val_transform,
+)
 
 
 # -----------------------------------------------------------------------
-# CONFIG
+# CONFIG (training-specific — not shared with inference.py)
 # -----------------------------------------------------------------------
 
-METADATA_PATH = Path("data/processed/metadata.csv")
-CHECKPOINT_DIR = Path("models")
-CHECKPOINT_DIR.mkdir(exist_ok=True)
-
-# Override where images actually live, since metadata.csv's stored paths
-# were written on Windows and won't resolve directly on Colab's Linux
-# filesystem. Set to None to use the paths in metadata.csv as-is (e.g. when
-# running locally on the same machine that built metadata.csv).
-# On Colab, set this to wherever you unzipped your images, e.g.:
-#   IMAGES_ROOT = Path("/content/images/eccv_18_all_images_sm")
-IMAGES_ROOT = None
-
-IMAGE_SIZE = 224          # standard input size for ResNet50
 BATCH_SIZE = 32
 VAL_FRACTION = 0.2
 
@@ -57,37 +48,13 @@ EPOCHS_FINETUNE = 5       # stage 2: fine-tune the whole network
 LR_FROZEN = 1e-3          # higher LR is fine, only a small new layer trains
 LR_FINETUNE = 1e-5        # much lower, to avoid wrecking pretrained features
 
-DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+# Override where images actually live, since metadata.csv's stored paths
+# were written on Windows and won't resolve directly on Colab's Linux
+# filesystem. Set to None to use the paths in metadata.csv as-is (e.g. when
+# running locally on the same machine that built metadata.csv).
+IMAGES_ROOT = None
 
 WANDB_PROJECT = "wildsense"
-
-
-# -----------------------------------------------------------------------
-# TRANSFORMS
-# -----------------------------------------------------------------------
-# ImageNet normalization stats — required because ResNet50 was pretrained
-# expecting inputs normalized this way. Using different stats would confuse
-# the pretrained layers.
-IMAGENET_MEAN = [0.485, 0.456, 0.406]
-IMAGENET_STD = [0.229, 0.224, 0.225]
-
-train_transform = transforms.Compose([
-    transforms.Resize((IMAGE_SIZE, IMAGE_SIZE)),
-    transforms.RandomHorizontalFlip(),      # cheap, effective augmentation:
-                                             # animals can face either direction
-    transforms.ColorJitter(brightness=0.2, contrast=0.2),  # camera traps see
-                                             # widely varying lighting conditions
-    transforms.ToTensor(),
-    transforms.Normalize(IMAGENET_MEAN, IMAGENET_STD),
-])
-
-val_transform = transforms.Compose([
-    transforms.Resize((IMAGE_SIZE, IMAGE_SIZE)),
-    transforms.ToTensor(),
-    transforms.Normalize(IMAGENET_MEAN, IMAGENET_STD),
-    # No augmentation for validation — we want to evaluate on realistic,
-    # unmodified images to get a true read on performance.
-])
 
 
 def compute_class_weights(train_rows, species_to_idx):
