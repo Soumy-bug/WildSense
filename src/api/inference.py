@@ -66,7 +66,7 @@ def load_model():
         checkpoint_path = hf_hub_download(repo_id=HF_REPO_ID, filename=HF_FILENAME)
         print(f"Downloaded to {checkpoint_path}")
 
-    model = build_model(num_classes=len(species_to_idx), freeze_backbone=False)
+    model = build_model(num_classes=len(species_to_idx), freeze_backbone=False, pretrained=False)
     model.load_state_dict(torch.load(checkpoint_path, map_location=DEVICE))
     model.to(DEVICE)
     model.eval()

@@ -77,7 +77,7 @@ def main():
     val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE, shuffle=False)
 
     print(f"Loading model checkpoint from {CHECKPOINT_PATH} ...")
-    model = build_model(num_classes=len(species_to_idx), freeze_backbone=False).to(DEVICE)
+    model = build_model(num_classes=len(species_to_idx), freeze_backbone=False, pretrained=False).to(DEVICE)
     model.load_state_dict(torch.load(CHECKPOINT_PATH, map_location=DEVICE))
     model.eval()
 

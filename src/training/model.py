@@ -11,18 +11,27 @@ import torch.nn as nn
 from torchvision.models import resnet50, ResNet50_Weights
 
 
-def build_model(num_classes, freeze_backbone=True):
+def build_model(num_classes, freeze_backbone=True, pretrained=True):
     """
-    Loads ResNet50 with ImageNet-pretrained weights and replaces its final
-    classification layer to match our number of species.
+    Builds a ResNet50 and replaces its final classification layer to match
+    our number of species.
+
+    pretrained=True (default, used for training): loads ImageNet-pretrained
+    weights as a starting point — this is what transfer learning needs.
+
+    pretrained=False (used for inference): skips downloading ImageNet
+    weights entirely, since we're about to load our own fully-trained
+    checkpoint anyway and would just overwrite them immediately. This
+    matters a lot on memory-constrained deployments (e.g. free-tier
+    hosting) — downloading and holding an extra ~98MB of weights we're
+    about to discard was enough to cause an out-of-memory crash.
 
     freeze_backbone=True freezes every layer except the new final layer,
-    so early training only updates the new classifier head. This is fast
-    and avoids destroying the useful pretrained features before the new
-    head has learned anything reasonable. Call unfreeze_backbone() later
-    to fine-tune the whole network at a lower learning rate.
+    so early training only updates the new classifier head. Call
+    unfreeze_backbone() later to fine-tune the whole network.
     """
-    model = resnet50(weights=ResNet50_Weights.IMAGENET1K_V2)
+    weights = ResNet50_Weights.IMAGENET1K_V2 if pretrained else None
+    model = resnet50(weights=weights)
 
     if freeze_backbone:
         for param in model.parameters():
