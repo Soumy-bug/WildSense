@@ -10,6 +10,7 @@ from pathlib import Path
 
 import torch
 from PIL import Image
+from huggingface_hub import hf_hub_download
 
 # Reuse the exact same transform and model-building logic from training,
 # so preprocessing at inference time matches preprocessing during training
@@ -21,6 +22,12 @@ from dataset import load_metadata, build_label_mapping
 from train import val_transform, DEVICE, METADATA_PATH, CHECKPOINT_DIR
 
 CHECKPOINT_PATH = CHECKPOINT_DIR / "best_model.pt"
+
+# Hugging Face Hub fallback — used when the checkpoint isn't present locally
+# (e.g. on a fresh deploy where models/ isn't in git). Swap in your own
+# repo if you're following along with a different upload.
+HF_REPO_ID = "Soumybug/wildsense-resnet50"
+HF_FILENAME = "best_model.pt"
 
 # Below this confidence, a prediction gets flagged for human review instead
 # of being logged as a confirmed sighting. This is the triage bucket
@@ -38,6 +45,11 @@ def load_model():
     startup (see main.py). Rebuilds idx_to_species the same deterministic
     way training did (sorted species names from metadata.csv), so index
     numbers line up correctly with the trained checkpoint's output layer.
+
+    Checks for the checkpoint locally first (fast, no network needed
+    during normal local development). If it's not there — e.g. on a fresh
+    deploy, since models/ is gitignored and never committed — downloads it
+    from Hugging Face Hub instead.
     """
     global _model, _idx_to_species
 
@@ -45,8 +57,17 @@ def load_model():
     species_to_idx, idx_to_species = build_label_mapping(rows)
     _idx_to_species = idx_to_species
 
+    if CHECKPOINT_PATH.exists():
+        checkpoint_path = CHECKPOINT_PATH
+        print(f"Loading model from local file: {checkpoint_path}")
+    else:
+        print(f"Local checkpoint not found. Downloading {HF_FILENAME} "
+              f"from Hugging Face Hub ({HF_REPO_ID})...")
+        checkpoint_path = hf_hub_download(repo_id=HF_REPO_ID, filename=HF_FILENAME)
+        print(f"Downloaded to {checkpoint_path}")
+
     model = build_model(num_classes=len(species_to_idx), freeze_backbone=False)
-    model.load_state_dict(torch.load(CHECKPOINT_PATH, map_location=DEVICE))
+    model.load_state_dict(torch.load(checkpoint_path, map_location=DEVICE))
     model.to(DEVICE)
     model.eval()
     _model = model
