@@ -1,0 +1,8 @@
+PytorchWildlife
+torch
+torchvision
+pandas
+scikit-learn
+soundfile
+librosa
+setuptools<81
