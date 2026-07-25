@@ -6,3 +6,5 @@ scikit-learn
 soundfile
 librosa
 setuptools<81
+wandb
+matplotlib
