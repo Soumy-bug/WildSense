@@ -8,8 +8,8 @@ librosa
 setuptools<81
 wandb
 matplotlib
-fastapi 
+fastapi
 uvicorn[standard]
-huggingface_hub
+
 sqlalchemy
 python-multipart
