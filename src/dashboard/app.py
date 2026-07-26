@@ -189,7 +189,7 @@ def build_confidence_histogram(df):
 
 
 def main():
-    st.title("🦊 WildSense — Species Monitoring Dashboard")
+    st.title("🦨 WildSense — Species Monitoring Dashboard")
     st.caption(
         "Camera trap sightings identified automatically by a fine-tuned "
         "classifier. GPS coordinates are simulated for demonstration — "
