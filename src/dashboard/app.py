@@ -28,31 +28,46 @@ ROLLING_WINDOW_WEEKS = 4
 st.set_page_config(page_title="WildSense Dashboard", layout="wide")
 
 
+SNAPSHOT_PATH = Path("data/processed/predictions_snapshot.csv")
+
+
 @st.cache_data(ttl=60)  # refresh from the DB at most once a minute
 def load_predictions():
     """
-    Loads all predictions from the database into a DataFrame, excluding
-    "null island" (0,0) test records — see Phase 3/4 notes on why these
-    exist and aren't real sightings.
+    Loads predictions from the live database if it has data. Falls back to
+    a committed CSV snapshot otherwise — this matters specifically for the
+    deployed version of this dashboard (Streamlit Community Cloud), which
+    has no access to the local wildsense.db that Phase 3's API writes to.
+    The snapshot is a point-in-time export (see export_snapshot.py) of the
+    same seeded historical data used throughout local development.
     """
-    db = SessionLocal()
-    records = db.query(Prediction).all()
-    db.close()
+    df = pd.DataFrame()
 
-    rows = [{
-        "species": r.species,
-        "confidence": r.confidence,
-        "needs_review": r.needs_review,
-        "latitude": r.latitude,
-        "longitude": r.longitude,
-        "created_at": r.created_at,
-    } for r in records]
+    try:
+        db = SessionLocal()
+        records = db.query(Prediction).all()
+        db.close()
 
-    df = pd.DataFrame(rows)
+        if records:
+            rows = [{
+                "species": r.species,
+                "confidence": r.confidence,
+                "needs_review": r.needs_review,
+                "latitude": r.latitude,
+                "longitude": r.longitude,
+                "created_at": r.created_at,
+            } for r in records]
+            df = pd.DataFrame(rows)
+    except Exception:
+        pass  # DB unavailable (e.g. deployed environment) — fall back below
+
+    if df.empty and SNAPSHOT_PATH.exists():
+        df = pd.read_csv(SNAPSHOT_PATH)
+
     if df.empty:
         return df
 
-    df["created_at"] = pd.to_datetime(df["created_at"])
+    df["created_at"] = pd.to_datetime(df["created_at"], format="ISO8601")
     is_null_island = (df["latitude"] == 0) & (df["longitude"] == 0)
     df = df[~is_null_island]
     return df
@@ -174,7 +189,7 @@ def build_confidence_histogram(df):
 
 
 def main():
-    st.title("🦨 WildSense — Species Monitoring Dashboard")
+    st.title("🦊 WildSense — Species Monitoring Dashboard")
     st.caption(
         "Camera trap sightings identified automatically by a fine-tuned "
         "classifier. GPS coordinates are simulated for demonstration — "
