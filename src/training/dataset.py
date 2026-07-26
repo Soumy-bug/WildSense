@@ -9,32 +9,12 @@ Phase 2 data loading. Handles:
   - a PyTorch Dataset class that loads and transforms images on demand
 """
 
-import csv
 from pathlib import Path
 
 from PIL import Image
-from sklearn.model_selection import train_test_split
 from torch.utils.data import Dataset
 
-
-def load_metadata(metadata_path):
-    """Reads metadata.csv into a list of dicts."""
-    with open(metadata_path, "r", newline="") as f:
-        rows = list(csv.DictReader(f))
-    return rows
-
-
-def build_label_mapping(rows):
-    """
-    Builds species_name -> integer index and the reverse mapping.
-    Models output numbers, not strings, so we need this conversion in
-    both directions (encoding labels for training, decoding predictions
-    back to species names for evaluation/reporting).
-    """
-    species_names = sorted(set(row["species_label"] for row in rows))
-    species_to_idx = {name: i for i, name in enumerate(species_names)}
-    idx_to_species = {i: name for name, i in species_to_idx.items()}
-    return species_to_idx, idx_to_species
+from labels import load_metadata, build_label_mapping
 
 
 def stratified_split(rows, val_fraction=0.2, seed=42):
@@ -43,7 +23,15 @@ def stratified_split(rows, val_fraction=0.2, seed=42):
     in both sets (e.g. if skunk is 3% of the data, it stays ~3% in both
     train and val, rather than accidentally ending up almost entirely in
     one set). This matters a lot with imbalanced classes like ours.
+
+    Imports scikit-learn locally (not at module level) so that importing
+    this file doesn't require scikit-learn to be installed unless this
+    specific function is actually called — matters for inference.py, which
+    imports load_metadata/build_label_mapping from labels.py instead and
+    never needs this function at all.
     """
+    from sklearn.model_selection import train_test_split
+
     labels = [row["species_label"] for row in rows]
     train_rows, val_rows = train_test_split(
         rows,
