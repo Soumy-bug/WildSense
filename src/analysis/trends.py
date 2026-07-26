@@ -1,19 +1,3 @@
-"""
-trends.py
-
-Phase 4: aggregates logged predictions (from the database built in Phase 3)
-into a time-series trend chart — sightings per species per week, smoothed
-with a rolling average.
-
-This is deliberately simple: pandas groupby + rolling mean, not a
-forecasting model. It answers "is sighting frequency going up or down
-over time," not "how many animals exist" (camera sighting frequency is a
-proxy for activity/detection, not a population census).
-
-Run from project root:
-    python src/analysis/trends.py
-"""
-
 import sys
 from pathlib import Path
 
@@ -26,8 +10,6 @@ from database import SessionLocal, Prediction
 RESULTS_DIR = Path("results")
 RESULTS_DIR.mkdir(exist_ok=True)
 
-# Rolling average window, in weeks. 4 weeks smooths out week-to-week noise
-# while still showing month-scale trend direction.
 ROLLING_WINDOW_WEEKS = 4
 
 

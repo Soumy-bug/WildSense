@@ -1,12 +1,3 @@
-"""
-model.py
-
-Phase 2 model definition. Builds a ResNet50 pretrained on ImageNet and
-swaps its final layer to output our species classes instead of ImageNet's
-1000 categories. See the "why transfer learning" explanation in the Phase 2
-guide for the reasoning behind this approach.
-"""
-
 import torch.nn as nn
 from torchvision.models import resnet50, ResNet50_Weights
 
@@ -37,9 +28,7 @@ def build_model(num_classes, freeze_backbone=True, pretrained=True):
         for param in model.parameters():
             param.requires_grad = False
 
-    # Replace the final fully-connected layer. This new layer is created
-    # fresh (not pretrained), so its requires_grad is True by default,
-    # meaning it always trains even when the rest of the model is frozen.
+    
     in_features = model.fc.in_features
     model.fc = nn.Linear(in_features, num_classes)
 

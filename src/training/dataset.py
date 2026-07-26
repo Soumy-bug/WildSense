@@ -1,14 +1,3 @@
-"""
-dataset.py
-
-Phase 2 data loading. Handles:
-  - reading metadata.csv (built in Phase 1)
-  - building a species-name <-> integer-index mapping (models need integer labels)
-  - splitting into train/val sets (stratified, so each species is represented
-    proportionally in both sets)
-  - a PyTorch Dataset class that loads and transforms images on demand
-"""
-
 from pathlib import Path
 
 from PIL import Image

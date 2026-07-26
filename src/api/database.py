@@ -1,12 +1,3 @@
-"""
-database.py
-
-Defines the database table where every prediction gets logged, using
-SQLAlchemy (an ORM — lets us work with Python classes instead of writing
-raw SQL). Starts with SQLite (a single file, zero setup) since that's
-plenty for this project's scale.
-"""
-
 from datetime import datetime, timezone
 
 from sqlalchemy import create_engine, Column, Integer, String, Float, Boolean, DateTime
@@ -33,8 +24,6 @@ class Prediction(Base):
     confidence = Column(Float, nullable=False)
     needs_review = Column(Boolean, default=False)  # confidence-based triage flag
 
-    # Optional location metadata — the client (dashboard, script, etc.)
-    # can supply these if known; otherwise they stay null.
     latitude = Column(Float, nullable=True)
     longitude = Column(Float, nullable=True)
 

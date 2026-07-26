@@ -1,14 +1,3 @@
-"""
-check_class_balance.py
-
-Prints how many images each species has in the final metadata.csv.
-Run this before training to decide whether you need weighted loss or
-oversampling to handle class imbalance (Phase 2).
-
-Run from project root:
-    python src/data/check_class_balance.py
-"""
-
 import csv
 from collections import Counter
 from pathlib import Path

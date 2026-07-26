@@ -1,18 +1,3 @@
-"""
-evaluate.py
-
-Loads the best trained model checkpoint, re-runs it on the validation set,
-and saves two artifacts for your README/documentation:
-  - results/confusion_matrix.png  (heatmap image)
-  - results/classification_report.txt (per-species precision/recall/F1)
-
-Uses the exact same train/val split as train.py (same seed), so these
-results match what training actually evaluated on.
-
-Run from project root:
-    python src/training/evaluate.py
-"""
-
 import sys
 from pathlib import Path
 
@@ -53,8 +38,7 @@ def plot_confusion_matrix(cm, species_names, output_path):
     ax.set_ylabel("True species")
     ax.set_title("WildSense — Validation Confusion Matrix")
 
-    # Write the actual count in each cell, with contrasting text color
-    # so numbers stay readable on both light and dark cells.
+    
     threshold = cm.max() / 2
     for i in range(cm.shape[0]):
         for j in range(cm.shape[1]):
@@ -105,7 +89,6 @@ def main():
     print(f"Saved classification report to {report_path}")
     print("\n" + report_text)
 
-    # ---- Confusion matrix (image) ----
     cm = confusion_matrix(all_labels, all_preds)
     plot_confusion_matrix(cm, species_names, RESULTS_DIR / "confusion_matrix.png")
 

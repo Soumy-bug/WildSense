@@ -1,20 +1,3 @@
-"""
-config.py
-
-Shared, lightweight configuration used by BOTH train.py (local training)
-and inference.py (API serving). Deliberately has zero heavy or
-training-only dependencies (no wandb, no matplotlib) so that importing
-this file — even indirectly, through inference.py — never pulls in
-packages the deployed API doesn't actually need.
-
-This file exists because of a real deployment bug: inference.py originally
-imported directly from train.py to reuse the val_transform and a few
-constants, which meant loading the API also loaded wandb (used only for
-training metric logging), breaking deployment on a minimal requirements
-file. Splitting the shared pieces out here fixes that at the root instead
-of adding every training dependency to the deployment requirements file.
-"""
-
 from pathlib import Path
 
 import torch

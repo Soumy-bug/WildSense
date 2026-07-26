@@ -1,17 +1,3 @@
-"""
-main.py
-
-The FastAPI application. Exposes:
-  POST /predict     — upload an image, get back a species prediction
-                       (every prediction also gets logged to the database)
-  GET  /predictions  — list recent logged predictions (useful for testing,
-                        and a preview of what Phase 5's dashboard will read)
-  GET  /health       — simple check that the API is running
-
-Run from project root:
-    uvicorn src.api.main:app --reload
-"""
-
 import io
 
 from fastapi import FastAPI, UploadFile, File, Form, Depends
@@ -53,9 +39,7 @@ async def predict(
 
     result = predict_species(image)
 
-    # Log this prediction to the database, regardless of confidence —
-    # low-confidence predictions still get logged, just flagged for review
-    # via needs_review, rather than being silently dropped.
+    
     record = Prediction(
         image_filename=file.filename,
         species=result["species"],

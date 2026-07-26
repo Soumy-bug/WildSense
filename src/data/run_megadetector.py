@@ -1,17 +1,3 @@
-"""
-run_megadetector.py
-
-Phase 1 script: filters CCT-20 images down to a small set of chosen species,
-then runs MegaDetector on each image to check "is there actually an animal here?"
-
-Output: data/processed/megadetector_results.csv
-    One row per image, with columns:
-    image_path, species_label, timestamp, detected, detection_confidence, bbox
-
-Run this from the project root (wildsense/) with your venv activated:
-    python src/data/run_megadetector.py
-"""
-
 import json
 import csv
 from pathlib import Path

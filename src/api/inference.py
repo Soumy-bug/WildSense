@@ -1,19 +1,3 @@
-"""
-inference.py
-
-Loads the trained model and runs predictions — now using ONNX Runtime
-instead of full PyTorch. This is a dependency-weight optimization only:
-the model's behavior is identical, since the ONNX file was exported
-directly from the trained PyTorch checkpoint (see export_to_onnx.py).
-
-Why this rewrite exists: torch + torchvision are large, general-purpose
-training libraries. Running inference — just a forward pass on already-
-trained weights — doesn't need any of that machinery. Deploying with
-onnxruntime instead cuts memory usage enough to fit Render's free tier
-(512MB), which the full torch-based version could not do even after
-removing the redundant ImageNet pretrained-weight download.
-"""
-
 from pathlib import Path
 
 import numpy as np
@@ -27,8 +11,7 @@ METADATA_PATH = Path("data/processed/metadata.csv")
 CHECKPOINT_DIR = Path("models")
 CHECKPOINT_PATH = CHECKPOINT_DIR / "best_model.onnx"
 
-# Hugging Face Hub fallback — used when the checkpoint isn't present locally
-# (e.g. on a fresh deploy where models/ isn't in git).
+
 HF_REPO_ID = "Soumybug/wildsense-resnet50"
 HF_FILENAME = "best_model.onnx"
 
@@ -36,8 +19,7 @@ IMAGE_SIZE = 224
 IMAGENET_MEAN = np.array([0.485, 0.456, 0.406], dtype=np.float32)
 IMAGENET_STD = np.array([0.229, 0.224, 0.225], dtype=np.float32)
 
-# Below this confidence, a prediction gets flagged for human review instead
-# of being logged as a confirmed sighting — the triage bucket feature.
+
 TRIAGE_CONFIDENCE_THRESHOLD = 0.5
 
 _session = None

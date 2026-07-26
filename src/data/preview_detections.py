@@ -1,15 +1,3 @@
-"""
-preview_detections.py
-
-Quick visual sanity-check: draws MegaDetector's bounding box + confidence
-score on top of a few sample images, so you can eyeball whether detections
-look correct. Saves annotated copies to data/processed/preview/ instead of
-popping up windows (simpler and works the same on any machine).
-
-Run from project root:
-    python src/data/preview_detections.py
-"""
-
 import csv
 import ast
 import random
@@ -19,7 +7,7 @@ from PIL import Image, ImageDraw
 
 METADATA_PATH = Path("data/processed/metadata.csv")
 OUTPUT_DIR = Path("data/processed/preview")
-NUM_SAMPLES = 8  # how many random images to preview
+NUM_SAMPLES = 8  
 
 
 def main():

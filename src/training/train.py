@@ -1,20 +1,3 @@
-"""
-train.py
-
-Phase 2 main training script. Fine-tunes ResNet50 on our filtered camera
-trap species dataset, handling class imbalance with weighted loss, and
-evaluating with per-species precision/recall/F1 (not just overall accuracy).
-
-Training happens in two stages:
-  Stage 1 (EPOCHS_FROZEN epochs): only the new classifier head trains,
-      backbone frozen. Fast, gets the head to a reasonable starting point.
-  Stage 2 (EPOCHS_FINETUNE epochs): whole network unfrozen, trains at a
-      much lower learning rate to gently adapt pretrained features.
-
-Run from project root (wildsense/) with venv activated:
-    python src/training/train.py
-"""
-
 import sys
 from pathlib import Path
 

@@ -1,19 +1,3 @@
-"""
-seed_database.py
-
-Populates the database with realistic "historical" sighting data by running
-the trained model directly on a sample of images from metadata.csv, and
-logging each prediction using that image's REAL capture timestamp and
-simulated GPS (both already present in metadata.csv from Phase 1) — rather
-than the current time, which is what a live /predict call would use.
-
-This exists so Phase 4 (trend analysis) and Phase 5 (dashboard) have
-meaningful data to work with instead of an empty database.
-
-Run from the project root using -m, so relative imports work correctly:
-    python -m src.api.seed_database
-"""
-
 import csv
 import random
 from datetime import datetime, timezone
@@ -25,7 +9,7 @@ from .database import init_db, SessionLocal, Prediction
 from .inference import load_model, predict_species
 
 METADATA_PATH = Path("data/processed/metadata.csv")
-NUM_SEED_IMAGES = 300  # how many images to run through the model and log
+NUM_SEED_IMAGES = 300 
 
 
 def parse_timestamp(timestamp_str):
@@ -84,7 +68,7 @@ def main():
         logged += 1
 
         if i % 50 == 0:
-            db.commit()  # commit in batches rather than one at a time
+            db.commit()  
             print(f"  [{i}/{len(sample)}] processed")
 
     db.commit()

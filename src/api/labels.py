@@ -1,14 +1,3 @@
-"""
-labels.py
-
-Pure-stdlib functions for loading metadata.csv and building the species
-name <-> index mapping. Deliberately has zero dependencies beyond Python's
-standard library (csv, pathlib) — split out from dataset.py specifically
-so that inference.py can use these without indirectly requiring torch or
-scikit-learn, which dataset.py needs for its Dataset class and stratified
-split but which the deployed API has no actual use for.
-"""
-
 import csv
 
 

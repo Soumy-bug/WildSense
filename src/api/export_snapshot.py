@@ -1,17 +1,3 @@
-"""
-export_snapshot.py
-
-Exports your local, fully-seeded database to a CSV snapshot that gets
-committed to the repo. The deployed dashboard (Streamlit Community Cloud)
-has no access to your local wildsense.db, so it falls back to reading this
-snapshot instead — see app.py's load_predictions(), which tries the live
-database first and only falls back to this file if that's empty or
-unavailable.
-
-Run from project root:
-    python -m src.api.export_snapshot
-"""
-
 import csv
 from pathlib import Path
 

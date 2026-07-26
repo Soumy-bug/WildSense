@@ -1,15 +1,3 @@
-"""
-app.py
-
-Phase 5: the interactive dashboard. Reads directly from the same database
-Phase 3's API writes to — new predictions show up here without any extra
-export step. Species filter controls both the map and the trend chart
-together, so exploring one species updates the whole view.
-
-Run from project root:
-    streamlit run src/dashboard/app.py
-"""
-
 import sys
 from pathlib import Path
 
@@ -31,7 +19,7 @@ st.set_page_config(page_title="WildSense Dashboard", layout="wide")
 SNAPSHOT_PATH = Path("data/processed/predictions_snapshot.csv")
 
 
-@st.cache_data(ttl=60)  # refresh from the DB at most once a minute
+@st.cache_data(ttl=60)  
 def load_predictions():
     """
     Loads predictions from the live database if it has data. Falls back to
@@ -59,7 +47,7 @@ def load_predictions():
             } for r in records]
             df = pd.DataFrame(rows)
     except Exception:
-        pass  # DB unavailable (e.g. deployed environment) — fall back below
+        pass 
 
     if df.empty and SNAPSHOT_PATH.exists():
         df = pd.read_csv(SNAPSHOT_PATH)
@@ -81,7 +69,6 @@ def build_map(df):
     species filter is currently active.
     """
     if df.empty:
-        # Fallback center (southern Arizona, matching our simulated GPS base)
         center = [31.9, -110.0]
     else:
         center = [df["latitude"].mean(), df["longitude"].mean()]
@@ -229,9 +216,6 @@ def main():
     if show_review_only:
         filtered = filtered[filtered["needs_review"]]
 
-    # date_input returns a single date while the user is mid-selection
-    # (only clicked one side of the range so far) — only apply the filter
-    # once both start and end dates are picked, to avoid an error.
     if isinstance(date_range, tuple) and len(date_range) == 2:
         start_date, end_date = date_range
         filtered = filtered[

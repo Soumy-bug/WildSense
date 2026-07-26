@@ -1,16 +1,3 @@
-"""
-export_to_onnx.py
-
-Converts the trained PyTorch checkpoint to ONNX format. ONNX is a
-portable model format that can run with the much lighter `onnxruntime`
-library instead of full PyTorch — meaningfully reduces memory and
-dependency footprint at deployment time, which is what fixed our
-out-of-memory crash on Render's free tier.
-
-Run once, locally, after training:
-    python src/training/export_to_onnx.py
-"""
-
 import sys
 from pathlib import Path
 
@@ -43,10 +30,7 @@ def main():
         output_names=["output"],
         dynamic_axes={"input": {0: "batch_size"}, "output": {0: "batch_size"}},
         opset_version=18,
-        external_data=False,  # embed weights directly in the .onnx file
-                                # instead of splitting them into a separate
-                                # .onnx.data file (which is the default,
-                                # and was making the main file look tiny).
+        external_data=False,  
     )
 
     print(f"Exported ONNX model to {ONNX_OUTPUT_PATH}")

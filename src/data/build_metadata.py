@@ -1,21 +1,3 @@
-"""
-build_metadata.py
-
-Phase 1, Step 5: builds the final clean metadata.csv that Phase 2's training
-script will load. Joins together:
-  - megadetector_results.csv (from run_megadetector.py) — which images passed
-    the "is there an animal here?" filter
-  - train_annotations.json — to recover each image's camera location ID
-  - simulated GPS coordinates — one fixed (fake) lat/long per camera location
-
-Output: data/processed/metadata.csv
-    Columns: image_path, species_label, timestamp, latitude, longitude,
-             detection_confidence, bbox
-
-Run this from the project root (wildsense/) with your venv activated:
-    python src/data/build_metadata.py
-"""
-
 import json
 import csv
 import hashlib
