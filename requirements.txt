@@ -2,6 +2,8 @@ PytorchWildlife
 torch
 torchvision
 pandas
+numpy
+Pillow
 scikit-learn
 soundfile
 librosa
@@ -13,3 +15,11 @@ uvicorn[standard]
 
 sqlalchemy
 python-multipart
+huggingface_hub
+streamlit
+folium
+streamlit-folium
+plotly
+onnx
+onnxscript
+onnxruntime
