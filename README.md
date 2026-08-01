@@ -2,7 +2,7 @@
 
 An end-to-end machine learning pipeline that automates species identification from camera trap images, filters out empty/false-trigger frames, logs sightings with geospatial metadata, and surfaces population trend insights through an interactive dashboard — built solo to reduce the manual triage burden that slows down real conservation work.
 
-**[Live Dashboard →](https://your-app-name.streamlit.app)** &nbsp;|&nbsp; **[Live API Docs →](https://wildsense.onrender.com/docs)** &nbsp;|&nbsp; **[Trained Model (Hugging Face) →](https://huggingface.co/Soumybug/wildsense-resnet50)**
+**[Live Dashboard →](https://wildsense-hjhtbc3yzsadtna57dqtmv.streamlit.app/)** &nbsp;|&nbsp; **[Live API Docs →](https://wildsense.onrender.com/docs)** &nbsp;|&nbsp; **[Trained Model (Hugging Face) →](https://huggingface.co/Soumybug/wildsense-resnet50)**
 
 > ⏱️ The API is hosted on a free tier and spins down after inactivity — the first request may take 30–60 seconds to wake up.
 
